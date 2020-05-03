@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.property.mapper.RepairAnnalMapper">
+  <resultMap id="BaseResultMap" type="com.management.property.pojo.RepairAnnal">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="request_type" jdbcType="VARCHAR" property="requestType" />
+    <result column="request_date" jdbcType="TIMESTAMP" property="requestDate" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="repair_status" jdbcType="VARCHAR" property="repairStatus" />
+    <result column="request_location" jdbcType="VARCHAR" property="requestLocation" />
+    <result column="request_phone" jdbcType="VARCHAR" property="requestPhone" />
+    <result column="repair_name" jdbcType="VARCHAR" property="repairName" />
+    <result column="repair_phone" jdbcType="VARCHAR" property="repairPhone" />
+    <result column="repair_date" jdbcType="TIMESTAMP" property="repairDate" />
+    <result column="repair_id" jdbcType="INTEGER" property="repairId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, request_type, request_date, user_name, repair_status, request_location, 
+    request_phone, repair_name, repair_phone, repair_date, repair_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from repair_annal
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from repair_annal
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+  <select id="count" resultType="INTEGER">
+        SELECT
+        count(id) as count
+        FROM
+        repair_annal
+   </select>
+  <select id="selectAllStatus" resultMap="BaseResultMap">
+    select * from repair_annal
+        where repair_status = #{status,jdbcType=VARCHAR}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+  <select id="selectAllByUserId" resultMap="BaseResultMap">
+    select * from repair_annal
+        where user_id = #{sid,jdbcType=VARCHAR}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from repair_annal
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.management.property.pojo.RepairAnnal">
+    insert into repair_annal (id, user_id, request_type, 
+      request_date, user_name, repair_status, 
+      request_location, request_phone, repair_name, 
+      repair_phone, repair_date, repair_id)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{requestType,jdbcType=VARCHAR}, 
+      #{requestDate,jdbcType=TIMESTAMP}, #{userName,jdbcType=VARCHAR}, #{repairStatus,jdbcType=VARCHAR}, 
+      #{requestLocation,jdbcType=VARCHAR}, #{requestPhone,jdbcType=VARCHAR}, #{repairName,jdbcType=VARCHAR}, 
+      #{repairPhone,jdbcType=VARCHAR}, #{repairDate,jdbcType=TIMESTAMP}, #{repairId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.management.property.pojo.RepairAnnal">
+    insert into repair_annal
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="requestType != null">
+        request_type,
+      </if>
+      <if test="requestDate != null">
+        request_date,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="repairStatus != null">
+        repair_status,
+      </if>
+      <if test="requestLocation != null">
+        request_location,
+      </if>
+      <if test="requestPhone != null">
+        request_phone,
+      </if>
+      <if test="repairName != null">
+        repair_name,
+      </if>
+      <if test="repairPhone != null">
+        repair_phone,
+      </if>
+      <if test="repairDate != null">
+        repair_date,
+      </if>
+      <if test="repairId != null">
+        repair_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="requestType != null">
+        #{requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="requestDate != null">
+        #{requestDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="repairStatus != null">
+        #{repairStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="requestLocation != null">
+        #{requestLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="requestPhone != null">
+        #{requestPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="repairName != null">
+        #{repairName,jdbcType=VARCHAR},
+      </if>
+      <if test="repairPhone != null">
+        #{repairPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="repairDate != null">
+        #{repairDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repairId != null">
+        #{repairId,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.management.property.pojo.RepairAnnal">
+    update repair_annal
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="requestType != null">
+        request_type = #{requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="requestDate != null">
+        request_date = #{requestDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="repairStatus != null">
+        repair_status = #{repairStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="requestLocation != null">
+        request_location = #{requestLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="requestPhone != null">
+        request_phone = #{requestPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="repairName != null">
+        repair_name = #{repairName,jdbcType=VARCHAR},
+      </if>
+      <if test="repairPhone != null">
+        repair_phone = #{repairPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="repairDate != null">
+        repair_date = #{repairDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repairId != null">
+        repair_id = #{repairId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.management.property.pojo.RepairAnnal">
+    update repair_annal
+    set user_id = #{userId,jdbcType=INTEGER},
+      request_type = #{requestType,jdbcType=VARCHAR},
+      request_date = #{requestDate,jdbcType=TIMESTAMP},
+      user_name = #{userName,jdbcType=VARCHAR},
+      repair_status = #{repairStatus,jdbcType=VARCHAR},
+      request_location = #{requestLocation,jdbcType=VARCHAR},
+      request_phone = #{requestPhone,jdbcType=VARCHAR},
+      repair_name = #{repairName,jdbcType=VARCHAR},
+      repair_phone = #{repairPhone,jdbcType=VARCHAR},
+      repair_date = #{repairDate,jdbcType=TIMESTAMP},
+      repair_id = #{repairId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

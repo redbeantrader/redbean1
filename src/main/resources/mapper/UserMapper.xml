@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.property.shiro.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.management.property.shiro.pojo.User">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_password" jdbcType="VARCHAR" property="loginPassword" />
+    <result column="user_status" jdbcType="INTEGER" property="userStatus" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_rent" jdbcType="INTEGER" property="userRent" />
+    <result column="user_number" jdbcType="VARCHAR" property="userNumber" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="parking_id" jdbcType="INTEGER" property="parkingId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, login_name, login_password, user_status, user_name, user_rent, user_number,
+    date, phone, parking_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="ALL"  resultMap="BaseResultMap">
+    select *
+    from user
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+
+  <select id="findByLoginName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where login_name = #{LoginName,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insert" parameterType="com.management.property.shiro.pojo.User">
+    insert into user (user_id, login_name, login_password, 
+      user_status, user_name,
+      user_rent, user_number, date
+      , phone, parking_id
+      )
+    values (#{userId,jdbcType=INTEGER}, #{loginName,jdbcType=VARCHAR}, #{loginPassword,jdbcType=VARCHAR}, 
+      #{userStatus,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR},#{userRent,jdbcType=INTEGER}
+      , #{userNumber,jdbcType=VARCHAR}, now(), #{phone,jdbcType=VARCHAR}
+      , #{parkingId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.management.property.shiro.pojo.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="loginPassword != null">
+        login_password,
+      </if>
+      <if test="userStatus != null">
+        user_status,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userRent != null">
+        userRent,
+      </if>
+      <if test="userNumber != null">
+        user_number,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="parkingId != null">
+        parking_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPassword != null">
+        #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null">
+        #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="user_rent != null">
+        #{user_rent,jdbcType=INTEGER},
+      </if>
+      <if test="userNumber != null">
+        #{userNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingId != null">
+        #{parkingId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.management.property.shiro.pojo.User">
+    update user
+    <set>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPassword != null">
+        login_password = #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null">
+        user_status = #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="userNumber != null">
+        user_number = #{userNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        date = #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingId != null">
+        parking_id = #{parkingId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.management.property.shiro.pojo.User">
+    update user
+    set login_name = #{loginName,jdbcType=VARCHAR},
+      login_password = #{loginPassword,jdbcType=VARCHAR},
+      user_status = #{userStatus,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_rent = #{userRent,jdbcType=INTEGER},
+      user_number = #{userNumber,jdbcType=VARCHAR},
+      date = #{date,jdbcType=TIMESTAMP},
+      phone = #{phone,jdbcType=VARCHAR},
+      parking_id = #{parkingId,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

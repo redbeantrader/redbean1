@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发布维修信息</title>
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<script>
+    $(function() {
+        $.ajax({
+            type: "POST", //提交表单的方式
+            url:  "resultInformation",
+            success: function(data) {//当访问链接成功后返回的事件
+                var form=layui.form;
+                $("#region").val(data.region);
+                $("#requestLocation").val(data.number);
+                form.render();
+            },
+            error: function(msg) { //当访问链接失败后返回的事件
+                alert("出错了");
+
+            }
+        });
+    });
+</script>
+<form class="layui-form" action="" lay-filter="example">
+    <div class="layui-form-item">
+        <label class="layui-form-label">报修内容</label>
+        <div class="layui-input-block">
+            <input id="requestType" type="text" name="requestType" lay-verify="requestType" autocomplete="off" class="layui-input" placeholder="请输入报修内容" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">所在地区</label>
+            <div class="layui-input-inline">
+                <input id="region" type="text" name="region" required lay-verify="region" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">户号</label>
+            <div class="layui-input-inline">
+                <input id="requestLocation" type="text" name="requestLocation" required lay-verify="requestLocation" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系方式</label>
+        <div class="layui-input-block">
+            <input id="requestPhone" type="text" name="requestPhone" required lay-verify="requestPhone" autocomplete="off" class="layui-input" placeholder="请输入联系方式">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="width: 75%">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="sumbit">确认提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sumbit)', function (data) {
+            var index = layer.load(1);
+            var data = data.field;
+            data.requestLocation = data.region + data.requestLocation;
+            $.ajax({
+                url: "add",
+                type: "post",
+                data: data,
+                success: function (result) {
+                    layer.close(index);
+                    if (result == 1) {
+                        layer.msg("发布成功",{
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            }
+                        });
+                    }
+                }, error: function (err) {
+                    layer.close(index);
+                    layer.msg("出现错误")
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

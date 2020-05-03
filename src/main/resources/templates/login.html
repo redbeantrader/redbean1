@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml，">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+<meta charset="utf-8">
+<title>登录与注册页面</title>
+    <link rel="stylesheet" href="../login/css/style.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="../layui/layui.js"></script>
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>-->
+</head>
+
+<body>
+
+    <shiro:authenticated>
+        <shiro:hasRole name="root">
+            <h1>您是root用户</h1>
+        </shiro:hasRole>
+        <shiro:lacksRole name="root">
+            <h1>您是非root用户</h1>
+        </shiro:lacksRole>
+        <div>您已登录，您可以选择回到主页或者退出登录</div>
+        <div>
+            <a href="/main">主页</a>
+        </div>
+        <div>
+            <a href="/logout">退出登录</a>
+        </div>
+    </shiro:authenticated>
+
+    <shiro:notAuthenticated>
+        <div class="content">
+            <div class="form sign-in">
+                <form id="loginform" action="/login" method="post">
+                    <h2>欢迎回来</h2>
+                    <div class="Tips"><p style="color: red;font-size: 12px;padding-top: 20px;" th:text="${msg}"></p></div>
+                    <label>
+                        <span>用户名</span>
+                        <input id="LoginName" type="text" name="LoginName"/>
+                    </label>
+                    <label>
+                        <span>密码</span>
+                        <input id="Lpassword" type="password" name="Lpassword"/>
+                    </label>
+                    <p id="forget" class="forgot-pass"><a href="#">忘记密码？</a></p>
+                    <button class="submit">登 录</button>
+                </form>
+            </div>
+
+            <div class="sub-cont">
+                <div class="img">
+                    <div class="img__text m--up">
+                        <h2>还未注册？</h2>
+                        <p>立即注册！</p>
+                    </div>
+                    <div class="img__text m--in">
+                        <h2>已有帐号？</h2>
+                        <p>有帐号就登录吧！</p>
+                    </div>
+                    <div class="img__btn">
+                        <span class="m--up">注 册</span>
+                        <span class="m--in">登 录</span>
+                    </div>
+                </div>
+
+                <div class="form sign-up">
+                    <form id="registeredform" action="/registered" method="post">
+                        <h2>立即注册</h2>
+                        <div class="Tips"><p style="color: red;font-size: 12px;padding-top: 20px;" th:text="${nth}"></p></div>
+                        <label>
+                            <span>用户名</span>
+                            <input id="RegisteredName" type="text" name="RegisteredName"/>
+                        </label>
+                        <label>
+                            <span>手机号</span>
+                            <input id="Phone" type="text" name="Phone"/>
+                        </label>
+                        <label>
+                            <span>密码</span>
+                            <input id="RegisteredPassword" type="password" name="RegisteredPassword"/>
+                        </label>
+                        <button id="registered" class="subclass">注 册</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </shiro:notAuthenticated>
+</body>
+<script src="../layui/layui.all.js"></script>
+<script src="../login/js/script.js"></script>
+</html>

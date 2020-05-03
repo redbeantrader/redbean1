@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的停车位信息</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<table class="layui-hide" id="demo" lay-filter="test"></table>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script type="text/html" id="barDemo_str" lay-filter="test">
+    <a class="layui-btn layui-btn-xs" lay-event="select">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="exit">退租</a>
+</script>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        table.render({
+            id: 'idTest',
+            elem: '#demo'
+            ,height: 525
+            ,cellMinWidth: 150
+            ,url: 'userPark' //数据接口
+            ,method: "get"
+            ,toolbar: '#toolbar'
+            ,page: true //开启分页
+            ,limits: [10, 25, 50, 100]
+            , cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', hide: true}
+                    , {field: 'type', title: '类型', sort: true}
+                    , {field: 'parkingPosition', title: '所在地区', sort: true}
+                    , {field: 'number', title: '编号', sort: true}
+                    , {field: 'status', title: '状态', sort: true}
+                    , {field: 'cost', title: '租金', sort: true}
+                    , {width: 165, align: 'center', toolbar: '#barDemo_str'}
+                ]
+            ]
+            ,text: {
+                none: '暂无相关数据' //默认：无数据。
+            }
+        });
+
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "select":
+                    TitleEvent();
+                    break;
+                case "exit":
+                    exit();
+                    break;
+
+//----------------------------------信息页面----------------------------
+                function TitleEvent() {
+                    layer.open({
+                        type: 2,
+                        title: "详细信息",
+                        content: ['look', 'no'],
+                        area: ['600px', '600px'],//宽高
+                        shadeClose: true,
+                        success: function (layero, index) {
+                            // var iframe = window['layui-layer-iframe' + index];
+                            // iframe.setdata(e.data);
+                            var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                            iframe.child(data, index)//向此iframe层方法 传递参数
+                        }
+                    })
+                }
+
+                function exit() {
+                    layer.confirm('确定退租?', {
+                        btn: ['确定', '取消'], //按钮
+                    }, function () {
+                        $.ajax({
+                            url: "exit",
+                            type: "post",
+                            data: {'id': data.id},
+                            success: function (result) {
+                                if (result == 1) {
+                                    layer.msg("退租成功", {
+                                        icon: 1,
+                                        time: 1000,
+                                        end: function () {
+                                            window.parent.location.reload();
+                                            var index = parent.layer.getFrameIndex(window.name);
+                                            parent.layer.close(index);
+                                        }
+                                    });
+                                }
+                            }, error: function (err) {
+                                layer.msg("退租失败")
+                            }
+                        })
+                    });
+                }
+            }
+        })
+    })
+
+</script>
+</body>
+</html>

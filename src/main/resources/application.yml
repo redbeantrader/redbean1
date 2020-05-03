@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: online
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+  type-aliases-package: com.management.property.**.pojo  # 注意：对应实体类的路径
+
+debug: true
+
+logging:
+  level:
+    root: WARN
+    org:
+      springframework:
+        security: DEBUG
+        web: ERROR
+        boot:
+          autoconfigure: ERROR
+    com:
+        management:
+          property:
+            shiro:
+              mapper: debug
+
+server:
+  port: 8080

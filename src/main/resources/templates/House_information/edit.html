@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设置住房</title>
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="example">
+    <input id="id" type="hidden" name="id" required lay-verify="id" autocomplete="off" class="layui-input" disabled="disabled">
+    <div class="layui-form-item">
+        <label class="layui-form-label">所在地区</label>
+        <div class="layui-input-block">
+            <input id="region" type="text" name="region" required lay-verify="region" autocomplete="off" class="layui-input" disabled="disabled"><!--不可更改-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">住房编号</label>
+        <div class="layui-input-block">
+            <input id="number" type="text" name="number" required lay-verify="number" autocomplete="off" class="layui-input" disabled="disabled"><!--不可更改-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">户型</label>
+        <div class="layui-input-block">
+            <select id="type" name="type" lay-verify="required" required>
+                <option value=""></option>
+                <option value="户型A">户型A</option>
+                <option value="户型B">户型B</option>
+                <option value="户型C">户型C</option>
+                <option value="户型D">户型D</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">面积</label>
+        <div class="layui-input-block">
+            <input id="area" type="number" name="area" required lay-verify="area" autocomplete="off" class="layui-input" placeholder="请输入面积">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">户型结构</label>
+        <div class="layui-input-block">
+            <select id="structure" name="structure" lay-verify="required" required>
+                <option value="">请选择户型结构</option>
+                <option value="一室一厅">一室一厅</option>
+                <option value="两室一厅">两室一厅</option>
+                <option value="两室两厅">两室两厅</option>
+                <option value="三室一厅">三室一厅</option>
+                <option value="三室两厅">三室两厅</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">当前状态</label>
+        <div class="layui-input-block">
+            <select id="sell" name="sell" lay-verify="required" required>
+                <option value="">请选择当前状态</option>
+                <option value="已出租">已出租</option>
+                <option value="待出租">待出租</option>
+                <option value="装修中">装修中</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">每月租金</label>
+        <div class="layui-input-block">
+            <input id="rent" type="number" name="rent" required lay-verify="rent" autocomplete="off" class="layui-input" placeholder="请输入每月租金">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="width: 75%">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="sumbit">确认提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sumbit)', function (data) {
+            var index = layer.load(1);
+            var data = data.field;//字段名和值
+            $.ajax({
+                url: "edit",
+                type: "post",
+                data: data,
+                success: function (result) {
+                    layer.close(index);
+                    if (result == 1) {
+                        layer.msg("提交成功",{
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            }
+                        });
+                    }
+                    else if(result==2){
+                        layer.msg("该住房正在出租，不可修改", {icon: 2})
+                    }
+                }, error: function (err) {
+                    layer.close(index);
+                    layer.msg("出错")
+                }
+            })
+            return false;
+        });
+    });
+
+    function child(res, index) {
+        var form=layui.form;
+        $("#id").val(res.id);
+        $("#region").val(res.region);
+        $("#number").val(res.number);
+        $("#structure").val(res.structure);
+        $("#sell").val(res.sell);
+        $("#rent").val(res.rent);
+        $("#area").val(res.area);
+        $("#type").val(res.type);
+        form.render();
+
+    }
+</script>
+</body>
+</html>

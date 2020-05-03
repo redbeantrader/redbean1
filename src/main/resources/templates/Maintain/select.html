@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看页面</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../../JQuery/jquery-3.4.1.js"></script>
+    <script src="../../layTabPlus/js/DateFormat.js"></script>
+</head>
+<body>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script type="text/javascript">
+    function child(res, index) {
+        var id = res.id;
+        $.ajax({
+            type: "POST", //提交表单的方式
+            url:  "examine",
+            data:{'id':id},
+            success: function(data) {//当访问链接成功后返回的事件
+                var form=layui.form;
+
+                    document.getElementById('requestType').innerHTML = data.requestType;
+                    document.getElementById('requestDate').innerHTML = DateFormat.toDatetime(data.requestDate);
+                    document.getElementById('userName').innerHTML = data.userName;
+                    document.getElementById('repairDtatus').innerHTML = data.repairDtatus;
+                    document.getElementById('requestLocation').innerHTML = data.requestLocation;
+                    document.getElementById('requestPhone').innerHTML = data.requestPhone;
+                    document.getElementById('repairName').innerHTML = data.repairName;
+                    document.getElementById('repairPhone').innerHTML = data.repairPhone;
+                    document.getElementById('repairDate').innerHTML = DateFormat.toDatetime(data.repairDate);
+
+                form.render();
+            },
+            error: function(msg) { //当访问链接失败后返回的事件
+                alert("出错了");
+
+            }
+        });
+
+    }
+</script>
+<form class="layui-form" action="" lay-filter="example">
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-col-space15">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-row">
+                        <div class="layui-col-xs12">
+                            <h3>报修内容 ：<label id="requestType"></label></h3>
+                            <h3>报修时间 ：<label id="requestDate"></label></h3>
+                            <h3>报修用户姓名 ：<label id="userName"></label></h3>
+                            <h3>状态 ：<label id="repairDtatus"></label></h3>
+                            <h3>地址 ：<label id="requestLocation"></label></h3>
+                            <h3>报修人联系方式 ：<label id="requestPhone"></label></h3>
+                            <h3>维修人姓名 ：<label id="repairName"></label></h3>
+                            <h3>维修人联系方式 ：<label id="repairPhone"></label></h3>
+                            <h3>完成维修时间 ：<label id="repairDate"></label></h3>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>

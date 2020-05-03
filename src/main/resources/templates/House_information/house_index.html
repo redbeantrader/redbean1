@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>购房信息</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+
+<shiro:hasRole name="root">
+    <script type="text/html" id="toolbar">
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe654;</i>发布新住房
+        </button>
+    </script>
+</shiro:hasRole>
+
+<shiro:hasRole name="str">
+    <table class="layui-hide" id="demo" lay-filter="test"></table>
+    <script type="text/html" id="barDemo_str" lay-filter="test">
+        <a class="layui-btn layui-btn-xs" lay-event="select">选择</a>
+    </script>
+</shiro:hasRole>
+
+<shiro:hasRole name="root">
+    <table class="layui-hide" id="rdemo" lay-filter="rtest"></table>
+    <script type="text/html" id="barDemo" lay-filter="test">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+    </script>
+</shiro:hasRole>
+
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            id: 'idTest',
+            elem: '#demo'
+            ,height: 525
+            ,cellMinWidth: 150
+            ,url: 'strList' //数据接口
+            ,method: "get"
+            ,toolbar: '#toolbar'
+            ,page: true //开启分页
+            ,limits: [10, 25, 50, 100]
+            , cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', hide: true}
+                    , {field: 'type', title: '类型', sort: true}
+                    , {field: 'region', title: '所在地区', sort: true}
+                    , {field: 'number', title: '住房编号', sort: true}
+                    , {field: 'structure', title: '户型结构', sort: true}
+                    , {field: 'area', title: '住房面积(m²)', sort: true}
+                    , {field: 'sell', title: '状态', sort: true}
+                    , {field: 'rent', title: '租金', sort: true}
+                    , {width: 165, align: 'center', toolbar: '#barDemo_str'}
+                ]
+            ]
+        });
+
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "select":
+                    TitleEvent();
+                    break;
+
+//----------------------------------信息页面----------------------------
+                function TitleEvent() {
+                    layer.confirm('确定租赁?', {
+                        btn: ['确定', '取消'], //按钮
+                    }, function () {
+                        layer.open({
+                            type: 2,
+                            title: "信息填写",
+                            content: 'rent',
+                            area: ['700px', '80%'],
+                            shadeClose: true,
+                            success: function (layero, index) {
+                                // var iframe = window['layui-layer-iframe' + index];
+                                // iframe.setdata(e.data);
+                                var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                                iframe.child(data, index)//向此iframe层方法 传递参数
+                            }
+                        })
+                    });
+                }
+            }
+        })
+    })
+
+</script>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            id: 'ridTest',
+            elem: '#rdemo'
+            ,height: 525
+            ,cellMinWidth: 150
+            ,url: 'List' //数据接口
+            ,method: "get"
+            ,toolbar: '#toolbar'
+            ,page: true //开启分页
+            ,limits: [10, 25, 50, 100]
+            ,cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', hide: true}
+                    ,{field: 'type', title: '类型', sort: true}
+                    ,{field: 'region', title: '所在地区', sort: true}
+                    ,{field: 'number', title: '住房编号', sort: true}
+                    ,{field: 'structure', title: '户型结构', sort: true}
+                    ,{field: 'area', title: '住房面积(m²)', sort: true}
+                    ,{field: 'sell', title: '状态', sort: true}
+                    ,{field: 'rent', title: '租金', sort: true}
+                    ,{width: 165, align:'center', toolbar: '#barDemo'}
+                ]
+            ]
+        });
+
+        table.on('tool(rtest)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "edit":
+                    editWindow();
+                    break;
+                case "delete":
+                    deleteAlert();
+                    break;
+//-----------------------------设置页面-------------------
+                function editWindow() {
+                    layer.open({
+                        type: 2,
+                        title: "编辑",
+                        content: 'edit',
+                        area: ['700px', '80%'],
+                        shadeClose: true,
+                        success: function (layero, index) {
+                            // var iframe = window['layui-layer-iframe' + index];
+                            // iframe.setdata(e.data);
+                            var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                            iframe.child(data, index)//向此iframe层方法 传递参数
+                        }
+                    })
+                }
+
+//-----------------------------删除----------------------
+                function deleteAlert() {
+                    layer.confirm('确定删除此住房记录?', {
+                        btn: ['确定', '取消'], //按钮
+                    }, function () {
+                        $.ajax({
+                            url: "delete",
+                            type: "post",
+                            data: {'id': data.id},
+                            success: function (result) {
+                                if (result == 1) {
+                                    layer.msg("删除成功", {
+                                        icon: 1,
+                                        time: 1000,
+                                        end: function () {
+                                            window.parent.location.reload();
+                                            var index = parent.layer.getFrameIndex(window.name);
+                                            parent.layer.close(index);
+                                        }
+                                    });
+                                }
+                                else if(result == 2){
+                                    layer.msg("此住房正在出租,不可删除住房", {icon: 2})
+                                }
+                            }, error: function (err) {
+                                layer.msg("删除失败")
+                            }
+                        })
+                    });
+                }
+            }
+
+        })
+        table.on('toolbar(rtest)', function(obj){
+            var data = obj.data;
+            switch (obj.event) {
+                case "add":
+                    openAddWindow();
+                    break;
+//------------------------------发布页面----------------------
+                function openAddWindow() {
+                    layer.open({
+                        type: 2,
+                        content: 'add', //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                        area: ['700px', '80%']
+                    });
+                }
+            }
+        })
+
+    });
+</script>
+</body>
+</html>

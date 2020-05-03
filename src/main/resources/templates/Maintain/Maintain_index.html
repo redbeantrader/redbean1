@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>维修派遣页面</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <script src="../../layTabPlus/js/DateFormat.js"></script>
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="example">
+
+    <shiro:hasRole name="com">
+        <script type="text/html" id="toolbar">
+            <button type="button" class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe654;</i>发布报修
+            </button>
+        </script>
+    </shiro:hasRole>
+
+    <shiro:hasRole name="com">
+        <table class="layui-hide" id="demo" lay-filter="test"></table>
+        <script type="text/html" id="barDemo_str" lay-filter="test">
+            <a class="layui-btn layui-btn-xs" lay-event="select">查看</a>
+            <a class="layui-btn layui-btn-xs" lay-event="delete">撤回</a>
+        </script>
+    </shiro:hasRole>
+
+    <shiro:hasRole name="root">
+        <table class="layui-hide" id="rdemo" lay-filter="rtest"></table>
+        <script type="text/html" id="barDemo" lay-filter="test">
+            <a class="layui-btn layui-btn-xs" lay-event="look">查看</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">派遣</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="return">召回</a>
+        </script>
+    </shiro:hasRole>
+</form>
+
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            id: 'idTest',
+            elem: '#demo'
+            ,height: 525
+            ,cellMinWidth: 150
+            ,url: 'List' //数据接口
+            ,method: "get"
+            ,toolbar: '#toolbar'
+            ,page: true //开启分页
+            ,limits: [10, 25, 50, 100]
+            , cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', hide: true}
+                    , {field: 'requestType', title: '信息', sort: true}
+                    , {field: 'requestDate', title: '时间', sort: true,templet: function (row) {return DateFormat.toDatetime(row.requestDate);}}
+                    , {field: 'repairStatus', title: '当前状态', sort: true}
+                    , {field: 'requestLocation', title: '报修人地址', sort: true}
+                    , {field: 'requestPhone', title: '联系方式', sort: true}
+                    , {width: 165, align: 'center', toolbar: '#barDemo_str'}
+                ]
+            ]
+        });
+
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "select":
+                    TitleEvent();
+                    break;
+                case "delete":
+                    Delete();
+                    break;
+
+//----------------------------------信息页面----------------------------
+                function TitleEvent() {
+                        layer.open({
+                            type: 2,
+                            title: "详细信息",
+                            content: 'select',
+                            area: ['700px', '80%'],
+                            shadeClose: true,
+                            success: function (layero, index) {
+                                // var iframe = window['layui-layer-iframe' + index];
+                                // iframe.setdata(e.data);
+                                var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                                iframe.child(data, index)//向此iframe层方法 传递参数
+                            }
+                        })
+                }
+                
+                function Delete() {
+                    if(data.repairStatus == "已维修"||data.repairStatus == "维修中"){
+                        layer.msg("正在维修中或已完成维修，不可撤回任务", {icon: 2})
+                    } else {
+                        layer.confirm('确定撤回此条报修信息?', {
+                            btn: ['确定', '取消'], //按钮
+                        }, function () {
+                            $.ajax({
+                                url: "delete",
+                                type: "post",
+                                data: {'id': data.id},
+                                success: function (result) {
+                                    if (result == 1) {
+                                        layer.msg("撤回成功", {
+                                            icon: 1,
+                                            time: 1000,
+                                            end: function () {
+                                                window.location.reload();
+                                                var index = parent.layer.getFrameIndex(window.name);
+                                                parent.layer.close(index);
+                                            }
+                                        });
+                                    }
+                                }, error: function (err) {
+                                    layer.msg("撤回失败")
+                                }
+                            })
+                        });
+                    }
+
+                }
+            }
+        })
+
+        table.on('toolbar(test)', function(obj){
+            var data = obj.data;
+            switch (obj.event) {
+                case "add":
+                    openAddWindow();
+                    break;
+//------------------------------发布页面----------------------
+                function openAddWindow() {
+                    layer.open({
+                        type: 2,
+                        content: 'add', //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                        area: ['700px', '80%']
+                    });
+                }
+            }
+        })
+    })
+
+</script>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            id: 'ridTest',
+            elem: '#rdemo'
+            ,height: 525
+            ,cellMinWidth: 150
+            ,url: 'AllList' //数据接口
+            ,method: "get"
+            ,toolbar: '#toolbar'
+            ,page: true //开启分页
+            ,limits: [10, 25, 50, 100]
+            ,cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', hide: true}
+                    , {field: 'requestType', title: '信息', sort: true}
+                    , {field: 'requestDate', title: '时间', sort: true,templet: function (row) {return DateFormat.toDatetime(row.requestDate);}}
+                    , {field: 'userName', title: '报修人姓名', sort: true}
+                    , {field: 'repairStatus', title: '当前状态', sort: true}
+                    , {field: 'requestLocation', title: '报修人地址', sort: true}
+                    , {field: 'requestPhone', title: '联系方式', sort: true}
+                    ,{width: 165, align:'center', toolbar: '#barDemo'}
+                ]
+            ]
+        });
+
+        table.on('tool(rtest)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "edit":
+                    editWindow();
+                    break;
+                case "return":
+                    returnAlert();
+                    break;
+                case "look":
+                    Look();
+                    break;
+//-----------------------------派遣页面-------------------
+                function editWindow() {
+                    if(data.repairStatus == "已修理"||data.repairStatus == "修理中"){
+                        layer.msg("派遣失败,正在维修或者已维修完毕", {icon: 2})
+                    }else{
+                        layer.open({
+                            type: 2,
+                            title: "编辑",
+                            content: 'edit',
+                            area: ['700px', '80%'],
+                            shadeClose: true,
+                            success: function (layero, index) {
+                                // var iframe = window['layui-layer-iframe' + index];
+                                // iframe.setdata(e.data);
+                                var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                                iframe.child(data, index)//向此iframe层方法 传递参数
+                            }
+                        })
+                    }
+                }
+
+//-----------------------------召回----------------------
+                function returnAlert() {
+                    if(data.repairStatus == "已修理"||data.repairStatus == "未修理"){
+                        layer.msg("无可召回的派遣人员", {icon: 2})
+                    }else {
+                        layer.confirm('确定召回维修人员?', {
+                            btn: ['确定', '取消'], //按钮
+                        }, function () {
+                            $.ajax({
+                                url: "return",
+                                type: "post",
+                                data: {'id': data.id},
+                                success: function (result) {
+                                    if (result == 1) {
+                                        layer.msg("召回成功", {
+                                            icon: 1,
+                                            time: 1000,
+                                            end: function () {
+                                                window.location.reload();
+                                                var index = parent.layer.getFrameIndex(window.name);
+                                                parent.layer.close(index);
+                                            }
+                                        });
+                                    }
+                                }, error: function (err) {
+                                    layer.msg("召回失败")
+                                }
+                            })
+                        });
+                    }
+                }
+
+                function Look() {
+                    layer.open({
+                        type: 2,
+                        title: "详细信息",
+                        content: 'select',
+                        area: ['700px', '80%'],
+                        shadeClose: true,
+                        success: function (layero, index) {
+                            // var iframe = window['layui-layer-iframe' + index];
+                            // iframe.setdata(e.data);
+                            var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                            iframe.child(data, index)//向此iframe层方法 传递参数
+                        }
+                    })
+                }
+            }
+
+        })
+
+    });
+</script>
+</body>
+</html>

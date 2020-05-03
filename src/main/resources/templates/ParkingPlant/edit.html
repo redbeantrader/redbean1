@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>车位设置</title>
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="example">
+    <input id="id" type="hidden" name="id" required lay-verify="id" autocomplete="off" class="layui-input" disabled="disabled">
+    <div class="layui-form-item">
+        <label class="layui-form-label">所在地区</label>
+        <div class="layui-input-block">
+            <input id="parkingPosition" type="text" name="parkingPosition" required lay-verify="parkingPosition" autocomplete="off" class="layui-input" disabled="disabled"><!--不可更改-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">编号</label>
+        <div class="layui-input-block">
+            <input id="number" type="text" name="number" required lay-verify="number" autocomplete="off" class="layui-input" disabled="disabled"><!--不可更改-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型</label>
+        <div class="layui-input-block">
+            <select id="type" name="type" lay-verify="required" required>
+                <option value=""></option>
+                <option value="地下停车场">地下停车场</option>
+                <option value="露天停车场">露天停车场</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">当前状态</label>
+        <div class="layui-input-block">
+            <select id="status" name="status" lay-verify="required" required>
+                <option value="">请选择当前状态</option>
+                <option value="已出租">已出租</option>
+                <option value="空闲">空闲</option>
+                <option value="维护中">维护中</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">每月租金</label>
+        <div class="layui-input-block">
+            <input id="cost" type="number" name="cost" required lay-verify="cost" autocomplete="off" class="layui-input" placeholder="请输入每月租金">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="width: 75%">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="sumbit">确认提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sumbit)', function (data) {
+            var index = layer.load(1);
+            var data = data.field;//字段名和值
+            $.ajax({
+                url: "edit",
+                type: "post",
+                data: data,
+                success: function (result) {
+                    layer.close(index);
+                    if (result == 1) {
+                        layer.msg("提交成功",{
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            }
+                        });
+                    }
+                    else if(result == 2){
+                        layer.msg("修改失败，该车位正在出租")
+                    }
+                }, error: function (err) {
+                    layer.close(index);
+                    layer.msg("出错")
+                }
+            })
+            return false;
+        });
+    });
+
+    function child(res, index) {
+        var form=layui.form;
+        $("#id").val(res.id);
+        $("#type").val(res.type);
+        $("#parkingPosition").val(res.parkingPosition);
+        $("#number").val(res.number);
+        $("#status").val(res.status);
+        $("#cost").val(res.cost);
+        form.render();
+
+    }
+</script>
+</body>
+</html>

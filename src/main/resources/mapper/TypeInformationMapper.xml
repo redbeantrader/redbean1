@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.property.mapper.TypeInformationMapper">
+  <resultMap id="BaseResultMap" type="com.management.property.pojo.TypeInformation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="area" jdbcType="REAL" property="area" />
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="structure" jdbcType="VARCHAR" property="structure" />
+    <result column="sell" jdbcType="VARCHAR" property="sell" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
+    <result column="rent" jdbcType="INTEGER" property="rent" />
+    <result column="water" jdbcType="REAL" property="water" />
+    <result column="electricity" jdbcType="REAL" property="electricity" />
+    <result column="gas" jdbcType="REAL" property="gas" />
+    <result column="internet" jdbcType="INTEGER" property="internet" />
+    <result column="wcut" jdbcType="INTEGER" property="wcut" />
+    <result column="ecut" jdbcType="INTEGER" property="ecut" />
+    <result column="gcut" jdbcType="INTEGER" property="gcut" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, area, region, structure, sell, number, rent, water, electricity, gas, internet, 
+    wcut, ecut, gcut
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from type_information
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByRegion" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type_information
+    where region = #{region,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from type_information
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+  <select id="count" resultType="INTEGER">
+        SELECT
+        count(id) as count
+        FROM
+        type_information
+   </select>
+  <select id="selectAllStr" resultMap="BaseResultMap">
+    select * from type_information
+        where sell = #{Sell,jdbcType=VARCHAR}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from type_information
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.management.property.pojo.TypeInformation">
+    insert into type_information (id, type, area, 
+      region, structure, sell, 
+      number, rent, water, electricity, 
+      gas, internet, wcut, ecut, 
+      gcut)
+    values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{area,jdbcType=REAL}, 
+      #{region,jdbcType=VARCHAR}, #{structure,jdbcType=VARCHAR}, #{sell,jdbcType=VARCHAR}, 
+      #{number,jdbcType=VARCHAR}, #{rent,jdbcType=INTEGER}, #{water,jdbcType=REAL}, #{electricity,jdbcType=REAL}, 
+      #{gas,jdbcType=REAL}, #{internet,jdbcType=INTEGER}, #{wcut,jdbcType=INTEGER}, #{ecut,jdbcType=INTEGER}, 
+      #{gcut,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.management.property.pojo.TypeInformation">
+    insert into type_information
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="region != null">
+        region,
+      </if>
+      <if test="structure != null">
+        structure,
+      </if>
+      <if test="sell != null">
+        sell,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="rent != null">
+        rent,
+      </if>
+      <if test="water != null">
+        water,
+      </if>
+      <if test="electricity != null">
+        electricity,
+      </if>
+      <if test="gas != null">
+        gas,
+      </if>
+      <if test="internet != null">
+        internet,
+      </if>
+      <if test="wcut != null">
+        wcut,
+      </if>
+      <if test="ecut != null">
+        ecut,
+      </if>
+      <if test="gcut != null">
+        gcut,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=REAL},
+      </if>
+      <if test="region != null">
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="structure != null">
+        #{structure,jdbcType=VARCHAR},
+      </if>
+      <if test="sell != null">
+        #{sell,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="rent != null">
+        #{rent,jdbcType=INTEGER},
+      </if>
+      <if test="water != null">
+        #{water,jdbcType=REAL},
+      </if>
+      <if test="electricity != null">
+        #{electricity,jdbcType=REAL},
+      </if>
+      <if test="gas != null">
+        #{gas,jdbcType=REAL},
+      </if>
+      <if test="internet != null">
+        #{internet,jdbcType=INTEGER},
+      </if>
+      <if test="wcut != null">
+        #{wcut,jdbcType=INTEGER},
+      </if>
+      <if test="ecut != null">
+        #{ecut,jdbcType=INTEGER},
+      </if>
+      <if test="gcut != null">
+        #{gcut,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.management.property.pojo.TypeInformation">
+    update type_information
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=REAL},
+      </if>
+      <if test="region != null">
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="structure != null">
+        structure = #{structure,jdbcType=VARCHAR},
+      </if>
+      <if test="sell != null">
+        sell = #{sell,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="rent != null">
+        rent = #{rent,jdbcType=INTEGER},
+      </if>
+      <if test="water != null">
+        water = #{water,jdbcType=REAL},
+      </if>
+      <if test="electricity != null">
+        electricity = #{electricity,jdbcType=REAL},
+      </if>
+      <if test="gas != null">
+        gas = #{gas,jdbcType=REAL},
+      </if>
+      <if test="internet != null">
+        internet = #{internet,jdbcType=INTEGER},
+      </if>
+      <if test="wcut != null">
+        wcut = #{wcut,jdbcType=INTEGER},
+      </if>
+      <if test="ecut != null">
+        ecut = #{ecut,jdbcType=INTEGER},
+      </if>
+      <if test="gcut != null">
+        gcut = #{gcut,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.management.property.pojo.TypeInformation">
+    update type_information
+    set type = #{type,jdbcType=VARCHAR},
+      area = #{area,jdbcType=REAL},
+      region = #{region,jdbcType=VARCHAR},
+      structure = #{structure,jdbcType=VARCHAR},
+      sell = #{sell,jdbcType=VARCHAR},
+      number = #{number,jdbcType=VARCHAR},
+      rent = #{rent,jdbcType=INTEGER},
+      water = #{water,jdbcType=REAL},
+      electricity = #{electricity,jdbcType=REAL},
+      gas = #{gas,jdbcType=REAL},
+      internet = #{internet,jdbcType=INTEGER},
+      wcut = #{wcut,jdbcType=INTEGER},
+      ecut = #{ecut,jdbcType=INTEGER},
+      gcut = #{gcut,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

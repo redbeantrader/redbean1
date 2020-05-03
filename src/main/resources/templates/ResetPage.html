@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>密码重置页面</title>
+    <script src="../layui/layui.js"></script>
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../login/js/Reset.js"></script>
+    <style>
+        form {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="example">
+<!--    layui-col-space-->
+    <div class="row">
+        <div class="hr-line-dashed"></div>
+        <div class="center" style="text-align: center;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-inline">
+                    <input id="LoginName" type="text" name="LoginName" required  lay-verify="LoginName" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机号</label>
+                <div class="layui-input-inline">
+                    <input id="Phone" type="text" name="Phone" required  lay-verify="Phone" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">新密码</label>
+                <div class="layui-input-inline">
+                    <input id="LoginPassword" type="text" name="LoginPassword" required  lay-verify="LoginPassword" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="right: 50px;">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="sumbit" style="float: left">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary" style="float: left">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>消息中心</title>
+    <script src="../../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+</head>
+<body>
+<div class="row">
+    <form class="layui-form" action="" lay-filter="example">
+        <table class="layui-hide" id="demo" lay-filter="test"></table>
+        <script type="text/html" id="barDemo_str" lay-filter="test">
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+        </script>
+    </form>
+</div>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        table.render({
+            id: 'idTest',
+            elem: '#demo'
+            ,height: 525
+            ,cellMinWidth: 150
+            ,url: 'List' //数据接口
+            ,method: "get"
+            ,toolbar: '#toolbar'
+            ,page: true //开启分页
+            ,limits: [10, 25, 50, 100]
+            , cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', hide: true}
+                    , {field: 'messageType', title: '通知类型', sort: true}
+                    , {field: 'messageContent', title: '内容', sort: true}
+                    , {field: 'messageTime', title: '时间', sort: true}
+                    , {field: 'title', title: '标题', sort: true}
+                    , {width: 165, align: 'center', toolbar: '#barDemo_str'}
+                ]
+            ]
+        });
+
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "delete":
+                    TitleEvent();
+                    break;
+
+//----------------------------------信息页面----------------------------
+                function TitleEvent() {
+                    layer.confirm('确定删除?', {
+                        btn: ['确定', '取消'], //按钮
+                    }, function () {
+                        $.ajax({
+                            url: "updata",
+                            type: "post",
+                            data: {'id': data.id},
+                            success: function (result) {
+                                if (result == 1) {
+                                    layer.msg("删除成功", {
+                                        icon: 1,
+                                        time: 1000,
+                                        end: function () {
+                                            window.location.reload();
+                                            var index = parent.layer.getFrameIndex(window.name);
+                                            parent.layer.close(index);
+                                        }
+                                    });
+                                }
+                            }, error: function (err) {
+                                layer.msg("出错")
+                            }
+                        })
+                    });
+                }
+            }
+        })
+    })
+
+</script>
+</body>
+</html>

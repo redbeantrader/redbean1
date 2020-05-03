@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户欠费信息</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <script src="../layTabPlus/js/DateFormat.js"></script>
+
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    function child(res, index) {
+        var id = res.userId;
+        $.ajax({
+            type: "POST", //提交表单的方式
+            url:  "findPayInformation",
+            data:{'id':id},
+            success: function(data) {//当访问链接成功后返回的事件
+                var form=layui.form;
+                for(var i in data){
+                    // document.getElementById('"'+i.id+'"').innerHTML = data.pay[i].payWhether;
+                    document.getElementById("1").innerHTML = data.pay[0].payWhether;
+                    document.getElementById("2").innerHTML = data.pay[1].payWhether;
+                    document.getElementById("3").innerHTML = data.pay[2].payWhether;
+                    document.getElementById("4").innerHTML = data.pay[3].payWhether;
+                    document.getElementById("5").innerHTML = data.pay[4].payWhether;
+                    document.getElementById("6").innerHTML = data.pay[5].payWhether;
+                    document.getElementById("7").innerHTML = data.pay[6].payWhether;
+                    document.getElementById("8").innerHTML = data.pay[7].payWhether;
+                    $("#id").val(data.result.id)
+                    if(data.result.internet === 0){
+                        $("#c").removeAttr('checked');
+                    }
+                    if(data.result.wcut === 0){
+                        $("#a").removeAttr('checked');
+                    }
+                    if(data.result.ecut === 0){
+                        $("#b").removeAttr('checked');
+                    }
+                    if(data.result.gcut === 0){
+                        $("#a").removeAttr('checked');
+                    }
+                }
+                form.render();
+            },
+            error: function(msg) { //当访问链接失败后返回的事件
+                alert("出错了");
+
+            }
+        });
+
+    }
+</script>
+<form class="layui-form" action="" lay-filter="example">
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-col-space15">
+            <div class="layui-card">
+                <div class="layui-card-header"><label id="productTypev2"></label></div>
+                <div class="layui-card-body">
+                    <div class="layui-row">
+                        <input id="id" type="hidden"  name="id" lay-skin="switch" lay-filter="id">
+                        <div class="layui-col-xs12">
+                            <h3>物业费 ：<label id="1"></label></h3>
+                            <h3>停车费 ：<label id="2"></label></h3>
+                            <h3>垃圾费 ：<label id="3"></label></h3>
+                            <h3>租金 ：<label id="8"></label></h3>
+
+                            <div class="layui-form-item">
+                                <h3>水费 ：<label id="5"></label></h3>
+                                <label class="layui-form-label">状态</label>
+                                <div class="layui-input-block">
+                                    <input id="a" type="checkbox" checked="" name="a" lay-skin="switch" lay-filter="a" lay-text="开|关">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <h3>电费 ：<label id="6"></label></h3>
+                                <label class="layui-form-label">状态</label>
+                                <div class="layui-input-block">
+                                    <input id="b" type="checkbox" checked="" name="b" lay-skin="switch" lay-filter="b" lay-text="开|关">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <h3>宽带费 ：<label id="4"></label></h3>
+                                <label class="layui-form-label">状态</label>
+                                <div class="layui-input-block">
+                                    <input id="c" type="checkbox" checked="" name="c" lay-skin="switch" lay-filter="c" lay-text="开|关">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <h3>天然气费 ：<label id="7"></label></h3>
+                                <label class="layui-form-label">状态</label>
+                                <div class="layui-input-block">
+                                    <input id="d" type="checkbox" checked="" name="d" lay-skin="switch" lay-filter="d" lay-text="开|关">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block" style="width: 75%">
+                                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="sumbit">确认提交</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sumbit)', function (data) {
+            var index = layer.load(1);
+            var data = data.field;
+
+            if(data.a == "on") {
+                data.a = "1";
+            } else {
+                data.a = "0";
+            }
+            if(data.b == "on") {
+                data.b = "1";
+            } else {
+                data.b = "0";
+            }
+            if(data.c == "on") {
+                data.c = "1";
+            } else {
+                data.c = "0";
+            }
+            if(data.d == "on") {
+                data.d = "1";
+            } else {
+                data.d = "0";
+            }
+
+            $.ajax({
+                url: "findset",
+                type: "post",
+                data: {'id':data.id,'a':data.a,'b':data.b,'c':data.c,'d':data.d},
+                success: function (result) {
+                    layer.close(index);
+                    if (result == 1) {
+                        layer.msg("设置成功",{
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            }
+                        });
+                    }
+                    else if(result == 2){
+                        layer.close(index);
+                        layer.msg("失败")
+                    }
+                }, error: function (err) {
+                    layer.close(index);
+                    layer.msg("出现错误")
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

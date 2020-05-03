@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>未缴费用</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <script src="../layTabPlus/js/DateFormat.js"></script>
+</head>
+<body>
+
+<shiro:hasRole name="com">
+    <script type="text/html" id="comtoolbar">
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="compay"><i class="layui-icon">&#xe65e;</i>一键缴费
+        </button>
+    </script>
+    <table class="layui-hide" id="demo" lay-filter="test"></table>
+    <script type="text/html" id="barDemo_com" lay-filter="test">
+        <a class="layui-btn layui-btn-xs" lay-event="select">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="paying">缴费</a>
+    </script>
+</shiro:hasRole>
+
+<shiro:hasRole name="root">
+    <script type="text/html" id="toolbar">
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="send"><i class="layui-icon">&#xe609;</i>一键发送缴费通知
+        </button>
+    </script>
+    <table class="layui-hide" id="rdemo" lay-filter="rtest"></table>
+    <script type="text/html" id="barDemo" lay-filter="test">
+        <a class="layui-btn layui-btn-xs" lay-event="selectAll">查看并编辑</a>
+    </script>
+</shiro:hasRole>
+
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        table.render({
+            id: 'idTest',
+            elem: '#demo'
+            , height: 525
+            , cellMinWidth: 150
+            , url: 'comListNot' //数据接口
+            , method: "get"
+            , page: true //开启分页
+            ,toolbar: '#comtoolbar'
+            , limits: [10, 25, 50, 100]
+            , cols: [
+                [ //表头
+                    {type: "checkbox", fixed: "left"}
+                    , {field: 'costsType', title: '类型', sort: true}
+                    , {field: 'payWhether', title: '缴费状态', sort: true}
+                    , {field: 'payMonth', title: '缴费月份', sort: true}
+                    , {field: 'payMoeny', title: '缴费金额', sort: true}
+                    , {field: 'payDate', title: '缴费日期', sort: true,templet: function (row) {return DateFormat.toDatetime(row.payDate);}}
+                    , {field: 'maturityDate', title: '有效日期', sort: true,templet: function (row) {return DateFormat.toDatetime(row.maturityDate);}}
+                    , {width: 165, align: 'center', toolbar: '#barDemo_com'}
+                ]
+            ]
+            ,text: {
+            none: '暂无相关数据' //默认：无数据。
+        }
+        });
+
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "select":
+                    TitleEvent();
+                    break;
+                case "paying":
+                    PayingEvent();
+                    break;
+//----------------------------------信息页面----------------------------
+                function TitleEvent() {
+                        layer.open({
+                            type: 2,
+                            title: "缴费信息",
+                            content: 'lookpay',
+                            area: ['700px', '80%'],
+                            shadeClose: true,
+                            success: function (layero, index) {
+                                // var iframe = window['layui-layer-iframe' + index];
+                                // iframe.setdata(e.data);
+                                var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                                iframe.child(data, index)//向此iframe层方法 传递参数
+                            }
+                        })
+                }
+
+//----------------------------------缴费询问框----------------------------------
+                function PayingEvent() {
+                    layer.confirm('确认缴费?需要支付'+data.payMoeny+'元', {
+                        btn: ['确定', '取消'], //按钮
+                    }, function () {
+                        $.ajax({
+                            url: "paying",
+                            type: "post",
+                            data: {'id': data.id},
+                            success: function (result) {
+                                if (result == 1) {
+                                    layer.msg("缴费成功", {
+                                        icon: 1,
+                                        time: 1000,
+                                        end: function () {
+                                            window.location.reload();
+                                        }
+                                    });
+                                }
+                            }, error: function (err) {
+                                layer.msg("缴费错误")
+                            }
+                        })
+                    });
+                }
+            }
+        })
+
+        table.on('toolbar(test)', function(obj){
+
+            var checkStatus = table.checkStatus(obj.config.id)
+                ,checkdata = checkStatus.data;
+
+            var data = obj.data;
+            switch (obj.event) {
+                case "compay":
+                    Pay();
+                    break;
+                case "selectAll":
+                    SelectAll();
+                    break;
+//------------------------------缴费信息回传----------------------
+                function Pay() {
+                    if(checkdata.length== 0){
+                        layer.msg('请勾选一条缴费记录');
+                    }
+                    else if(checkdata.length!=0){
+                        var paying = 0;
+                        for(k in checkdata){
+                            paying = checkdata[k].payMoeny+paying;
+                        }
+                        layer.confirm('确认缴费?总支出为'+paying+'元', {
+                            btn: ['确定', '取消'], //按钮
+                        }, function () {
+                            var idList = new Array();
+                            for(k in checkdata){
+                                idList[k]=checkdata[k].id;
+                            }
+                            $.ajax({
+                                traditional: true,
+                                url: "payingList",
+                                type: "post",
+                                data: {"id":idList,},
+                                success: function (result) {
+                                    if (result == 1) {
+                                        layer.msg("一键缴费成功", {
+                                            icon: 1,
+                                            time: 1000,
+                                            end: function () {
+                                                window.location.reload();
+                                            }
+                                        });
+                                    }
+                                }, error: function (err) {
+                                    layer.msg("缴费错误")
+                                }
+                            })
+                        });
+                    }
+
+                }
+
+                function SelectAll() {
+                    layer.open({
+                        type: 2,
+                        title: "缴费信息",
+                        content: 'lookpay',
+                        area: ['700px', '80%'],
+                        shadeClose: true,
+                        success: function (layero, index) {
+                            // var iframe = window['layui-layer-iframe' + index];
+                            // iframe.setdata(e.data);
+                            var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                            iframe.child(data, index)//向此iframe层方法 传递参数
+                        }
+                    })
+                }
+            }
+        })
+    })
+
+</script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        table.render({
+            id: 'ridTest',
+            elem: '#rdemo'
+            , height: 525
+            , cellMinWidth: 150
+            , url: 'ListNot' //数据接口
+            , method: "get"
+            , toolbar: '#toolbar'
+            , page: true //开启分页
+            , limits: [10, 25, 50, 100]
+            , cols: [
+                [ //表头
+                    {type: "checkbox", fixed: "left"}
+                    , {field: 'id', title: 'ID', hide: true}
+                    , {field: 'userName', title: '户主', sort: true}
+                    , {field: 'region', title: '住址', sort: true}
+                    , {field: 'paywhether', title: '缴费状态', sort: true}
+                    , {field: 'paymoeny', title: '欠费金额', sort: true}
+                    , {width: 165, align: 'center', toolbar: '#barDemo'}
+                ]
+            ]
+            ,
+            text: {
+                none: '暂无相关数据' //默认：无数据。
+            }
+        });
+
+        table.on('tool(rtest)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "selectAll":
+                    find();
+                    break;
+
+//-------------------------------查看页面----------------------
+                function find() {
+                    layer.open({
+                        type: 2,
+                        title: "详细信息",
+                        content: ['find', 'no'],
+                        area: ['600px', '600px'],//宽高
+                        shadeClose: true,
+                        success: function (layero, index) {
+                            // var iframe = window['layui-layer-iframe' + index];
+                            // iframe.setdata(e.data);
+                            var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                            iframe.child(data, index)//向此iframe层方法 传递参数
+                        }
+                    })
+                }
+            }
+        })
+
+        table.on('toolbar(rtest)', function (obj) {
+
+            var checkStatus = table.checkStatus(obj.config.id)
+                , checkdata = checkStatus.data;
+
+            var data = obj.data;
+            switch (obj.event) {
+                case "send":
+                    sendInformation();
+                    break;
+
+//------------------------------发送消息----------------------
+                function sendInformation() {
+                    if (checkdata.length == 0) {
+                        layer.msg('请勾选一条缴费记录');
+                    } else if (checkdata.length != 0) {
+                        var paying = 0;
+                        for (k in checkdata) {
+                            paying = checkdata[k].payMoeny + paying;
+                        }
+                        layer.confirm('确认发送缴费通知?', {
+                            btn: ['确定', '取消'], //按钮
+                        }, function () {
+                            var idList = new Array();
+                            for (k in checkdata) {
+                                idList[k] = checkdata[k].userId;
+                            }
+                            $.ajax({
+                                traditional: true,
+                                url: "sendInformation",
+                                type: "post",
+                                data: {"id": idList},
+                                success: function (result) {
+                                    if (result == 1) {
+                                        layer.msg("一键发送成功", {
+                                            icon: 1,
+                                            time: 1000,
+                                            end: function () {
+                                                window.location.reload();
+                                            }
+                                        });
+                                    }
+                                }, error: function (err) {
+                                    layer.msg("发生错误")
+                                }
+                            })
+                        })
+                    }
+                }
+            }
+        });
+    })
+</script>
+</body>
+</html>

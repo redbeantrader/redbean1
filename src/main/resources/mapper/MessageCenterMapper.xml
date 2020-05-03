@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.property.mapper.MessageCenterMapper">
+  <resultMap id="BaseResultMap" type="com.management.property.pojo.MessageCenter">
+    <id column="message_id" jdbcType="INTEGER" property="messageId" />
+    <result column="message_type" jdbcType="VARCHAR" property="messageType" />
+    <result column="message_status" jdbcType="VARCHAR" property="messageStatus" />
+    <result column="message_content" jdbcType="VARCHAR" property="messageContent" />
+    <result column="message_time" jdbcType="TIMESTAMP" property="messageTime" />
+    <result column="promulgator_id" jdbcType="INTEGER" property="promulgatorId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    message_id, message_type, message_status, message_content, message_time, promulgator_id, 
+    user_id, title
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from message_center
+    where message_id = #{messageId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from message_center
+    where message_id = #{messageId,jdbcType=INTEGER}
+  </delete>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from message_center
+    where user_id = #{id,jdbcType=INTEGER}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+  <select id="count" resultType="INTEGER">
+        SELECT
+        count(message_id) as count
+        FROM
+        message_center
+   </select>
+
+  <insert id="insert" parameterType="com.management.property.pojo.MessageCenter">
+    insert into message_center (message_id, message_type, message_status, 
+      message_content, message_time, promulgator_id, 
+      user_id, title)
+    values (#{messageId,jdbcType=INTEGER}, #{messageType,jdbcType=VARCHAR}, #{messageStatus,jdbcType=VARCHAR}, 
+      #{messageContent,jdbcType=VARCHAR}, #{messageTime,jdbcType=TIMESTAMP}, #{promulgatorId,jdbcType=INTEGER}, 
+      #{userId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.management.property.pojo.MessageCenter">
+    insert into message_center
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="messageId != null">
+        message_id,
+      </if>
+      <if test="messageType != null">
+        message_type,
+      </if>
+      <if test="messageStatus != null">
+        message_status,
+      </if>
+      <if test="messageContent != null">
+        message_content,
+      </if>
+      <if test="messageTime != null">
+        message_time,
+      </if>
+      <if test="promulgatorId != null">
+        promulgator_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="messageId != null">
+        #{messageId,jdbcType=INTEGER},
+      </if>
+      <if test="messageType != null">
+        #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="messageStatus != null">
+        #{messageStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="messageContent != null">
+        #{messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="messageTime != null">
+        #{messageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="promulgatorId != null">
+        #{promulgatorId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.management.property.pojo.MessageCenter">
+    update message_center
+    <set>
+      <if test="messageType != null">
+        message_type = #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="messageStatus != null">
+        message_status = #{messageStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="messageContent != null">
+        message_content = #{messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="messageTime != null">
+        message_time = #{messageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="promulgatorId != null">
+        promulgator_id = #{promulgatorId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where message_id = #{messageId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.management.property.pojo.MessageCenter">
+    update message_center
+    set message_type = #{messageType,jdbcType=VARCHAR},
+      message_status = #{messageStatus,jdbcType=VARCHAR},
+      message_content = #{messageContent,jdbcType=VARCHAR},
+      message_time = #{messageTime,jdbcType=TIMESTAMP},
+      promulgator_id = #{promulgatorId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR}
+    where message_id = #{messageId,jdbcType=INTEGER}
+  </update>
+</mapper>

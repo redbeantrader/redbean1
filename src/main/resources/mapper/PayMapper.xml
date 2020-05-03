@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.property.mapper.PayMapper">
+  <resultMap id="BaseResultMap" type="com.management.property.pojo.Pay">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="costs_id" jdbcType="INTEGER" property="costsId" />
+    <result column="pay_whether" jdbcType="VARCHAR" property="payWhether" />
+    <result column="pay_month" jdbcType="INTEGER" property="payMonth" />
+    <result column="pay_moeny" jdbcType="REAL" property="payMoeny" />
+    <result column="pay_date" jdbcType="TIMESTAMP" property="payDate" />
+    <result column="maturity_date" jdbcType="TIMESTAMP" property="maturityDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, costs_id, pay_whether, pay_month, pay_moeny, pay_date, maturity_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="UserIdSelect" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay
+    where user_id = #{userid,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay
+    where user_id = #{userid,jdbcType=INTEGER} and pay_whether = #{pay,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from pay a left join costs b on a.costs_id = b.costs_id left join user c on a.user_id = c.user_id
+    where pay_whether = #{payWhether,jdbcType=VARCHAR}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+  <select id="count" resultType="INTEGER">
+        SELECT
+        count(id) as count
+        FROM
+        pay
+    </select>
+  <select id="selectAllByIdandWhether" resultMap="BaseResultMap">
+    select * from pay a left join costs b on a.costs_id = b.costs_id
+    where user_id = #{id,jdbcType=INTEGER} and pay_whether = #{payWhether,jdbcType=VARCHAR}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pay
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.management.property.pojo.Pay">
+    insert into pay (id, user_id, costs_id, 
+      pay_whether, pay_month, pay_moeny, 
+      pay_date, maturity_date)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{costsId,jdbcType=INTEGER}, 
+      #{payWhether,jdbcType=VARCHAR}, #{payMonth,jdbcType=INTEGER}, #{payMoeny,jdbcType=REAL}, 
+      #{payDate,jdbcType=TIMESTAMP}, #{maturityDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.management.property.pojo.Pay">
+    insert into pay
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="costsId != null">
+        costs_id,
+      </if>
+      <if test="payWhether != null">
+        pay_whether,
+      </if>
+      <if test="payMonth != null">
+        pay_month,
+      </if>
+      <if test="payMoeny != null">
+        pay_moeny,
+      </if>
+      <if test="payDate != null">
+        pay_date,
+      </if>
+      <if test="maturityDate != null">
+        maturity_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="costsId != null">
+        #{costsId,jdbcType=INTEGER},
+      </if>
+      <if test="payWhether != null">
+        #{payWhether,jdbcType=VARCHAR},
+      </if>
+      <if test="payMonth != null">
+        #{payMonth,jdbcType=INTEGER},
+      </if>
+      <if test="payMoeny != null">
+        #{payMoeny,jdbcType=REAL},
+      </if>
+      <if test="payDate != null">
+        #{payDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="maturityDate != null">
+        #{maturityDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.management.property.pojo.Pay">
+    update pay
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="costsId != null">
+        costs_id = #{costsId,jdbcType=INTEGER},
+      </if>
+      <if test="payWhether != null">
+        pay_whether = #{payWhether,jdbcType=VARCHAR},
+      </if>
+      <if test="payMonth != null">
+        pay_month = #{payMonth,jdbcType=INTEGER},
+      </if>
+      <if test="payMoeny != null">
+        pay_moeny = #{payMoeny,jdbcType=REAL},
+      </if>
+      <if test="payDate != null">
+        pay_date = #{payDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="maturityDate != null">
+        maturity_date = #{maturityDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.management.property.pojo.Pay">
+    update pay
+    set user_id = #{userId,jdbcType=INTEGER},
+      costs_id = #{costsId,jdbcType=INTEGER},
+      pay_whether = #{payWhether,jdbcType=VARCHAR},
+      pay_month = #{payMonth,jdbcType=INTEGER},
+      pay_moeny = #{payMoeny,jdbcType=REAL},
+      pay_date = #{payDate,jdbcType=TIMESTAMP},
+      maturity_date = #{maturityDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

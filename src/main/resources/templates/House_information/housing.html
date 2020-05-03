@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>住房信息</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../../HouseIndex/CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="../../HouseIndex/CSS/materialize.min.css">
+    <link rel="stylesheet" href="../../HouseIndex/CSS/tooplate.css">
+    <script src="../../HouseIndex/JS/materialize.min.js"></script>
+<body id="home">
+<script type="text/javascript">
+    $(function() {
+        $.ajax({
+            type: "POST", //提交表单的方式
+            url:  "/House/housing",
+            success: function(data) {//当访问链接成功后返回的事件
+                document.getElementById('type').innerHTML = data.type;
+                document.getElementById('area').innerHTML = data.area;
+                document.getElementById('region').innerHTML = data.region+data.number;
+                document.getElementById('structure').innerHTML = data.structure;
+                document.getElementById('rent').innerHTML = data.rent;
+                document.getElementById('water').innerHTML = data.water+'吨';
+                document.getElementById('electricity').innerHTML = data.electricity+'度';
+                document.getElementById('gas').innerHTML = data.gas+'m³';
+                document.getElementById('internet').innerHTML = data.internet;
+            },
+            error: function(msg) { //当访问链接失败后返回的事件
+                alert("出错了");
+
+            }
+        });
+    });
+</script>
+
+<div class="container tm-home-mt tm-home-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="tm-home-left">
+                <h1 class="tm-site-title">个人住房信息</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+            <div class="tm-home-left mt-3 font-weight-light">
+                <p class="tm-mb-35">&nbsp&nbsp&nbsp&nbsp&nbsp户型&nbsp:&nbsp<label id="type"></label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp住房面积&nbsp:&nbsp<label id="area"></label></p>
+                <p class="tm-mb-35">&nbsp&nbsp&nbsp&nbsp&nbsp地址&nbsp:&nbsp<label id="region"></label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp户型结构:<label id="structure"></label></p>
+                <p class="tm-mb-35">&nbsp&nbsp&nbsp&nbsp&nbsp租金&nbsp:&nbsp<label id="rent"></label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp已用水&nbsp:&nbsp<label id="water"></label></p>
+                <p class="tm-mb-35">&nbsp&nbsp&nbsp&nbsp&nbsp已用电&nbsp:&nbsp<label id="electricity"></label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp已用气&nbsp:&nbsp<label id="gas"></label></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

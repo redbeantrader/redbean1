@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>住户信息填写</title>
+    <style>
+        form {
+            padding: 20px;
+        }
+    </style>
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="example">
+    <input id="userRent" type="hidden" name="userRent" required lay-verify="userRent" autocomplete="off" class="layui-input" disabled="disabled">
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-input-block">
+            <input id="userName" type="text" name="userName" required lay-verify="userName" autocomplete="off" class="layui-input" placeholder="请输入姓名">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">身份证号</label>
+        <div class="layui-input-block">
+            <input id="userNumber" type="text" name="userNumber" required lay-verify="userNumber" autocomplete="off" class="layui-input" placeholder="请输入身份证号码">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所在地区</label>
+        <div class="layui-input-block">
+            <input id="region" type="text" name="region" required lay-verify="region" autocomplete="off" class="layui-input" disabled="disabled"><!--不可更改-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">户型结构</label>
+        <div class="layui-input-block">
+            <input id="structure" type="text" name="structure" required lay-verify="structure" autocomplete="off" class="layui-input" disabled="disabled"><!--不可更改-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">租金</label>
+        <div class="layui-input-block">
+            <input id="rent" type="text" name="rent" required lay-verify="rent" autocomplete="off" class="layui-input" disabled="disabled"><!--不可更改-->
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="width: 75%">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="sumbit">确认提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sumbit)', function (data) {
+            var index = layer.load(1);
+            var data = data.field;
+            $.ajax({
+                url: "join",
+                type: "post",
+                data: {'userRent':data.userRent,'userName' : data.userName,'userNumber' : data.userNumber},
+                success: function (result) {
+                    layer.close(index);
+                    if (result == 1) {
+                        layer.msg("申请成功,请重新登陆",{
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                                window.location.href="/logout"
+                            }
+                        });
+                    }
+                }, error: function (err) {
+                    layer.close(index);
+                    layer.msg("出现错误")
+                }
+            })
+            return false;
+        });
+    });
+
+    function child(res, index) {
+        var form=layui.form;
+        $("#userRent").val(res.id);
+        $("#type").val(res.type);
+        $("#region").val(res.region+res.number);
+        $("#structure").val(res.structure);
+        $("#rent").val(res.rent);
+        form.render();
+
+    }
+</script>
+</body>
+</html>

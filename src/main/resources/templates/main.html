@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html xmlns:th="http://www.thymeleleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>物业管理系统</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">红豆商人</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+<!--        <ul class="layui-nav layui-layout-left">-->
+<!--            <li class="layui-nav-item">-->
+<!--                <a href="/">返回前台</a>-->
+<!--            </li>-->
+<!--            <li class="layui-nav-item">-->
+<!--                <a href="">商品管理</a>-->
+<!--            </li>-->
+<!--            <li class="layui-nav-item">-->
+<!--                <a href="">用户</a>-->
+<!--            </li>-->
+<!--            <li class="layui-nav-item">-->
+<!--                <a href="javascript:;">其它系统</a>-->
+<!--                <dl class="layui-nav-child">-->
+<!--                    <dd>-->
+<!--                        <a href="">邮件管理</a>-->
+<!--                    </dd>-->
+<!--                    <dd>-->
+<!--                        <a href="">消息管理</a>-->
+<!--                    </dd>-->
+<!--                    <dd>-->
+<!--                        <a href="">授权管理</a>-->
+<!--                    </dd>-->
+<!--                </dl>-->
+<!--            </li>-->
+<!--        </ul>-->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="https://gitee.com/uploads/66/890966_Leytton.png?1512991922" class="layui-nav-img"><shiro:principal property="userName"/></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:;" onclick="addTab(this);" class="layTabPlus" tab_url="UserInformation/Information">基本资料</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;" class="layTabPlus" onclick="addTab(this);" tab_url="Message/index" >消息中心</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;" class="layTabPlus" onclick="addTab(this);" tab_url="UserInformation/PEdit" >修改密码</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="/logout">退出</a>
+            </li>
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <!-- 在li标签的class内加上layui-nav-itemed 可以默认展开-->
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a href="javascript:;">房屋基本信息</a>
+                    <dl class="layui-nav-child">
+                        <!--class="layui-this"可以默认选中-->
+                        <shiro:hasRole name="com">
+                            <dd ><a href="javascript:;" class="layTabPlus" tab_url="House/housing">住房基本信息</a></dd>
+                        </shiro:hasRole>
+                        <shiro:lacksRole name="com">
+                        <dd ><a href="javascript:;" class="layTabPlus" tab_url="House/index">购房信息</a></dd>
+                        </shiro:lacksRole>
+                    </dl>
+                </li>
+                <shiro:lacksRole name="str">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">缴费模块</a>
+                        <dl class="layui-nav-child">
+                                <dd>
+                                    <a href="javascript:;" class="layTabPlus" tab_url="Payment/not">未缴费用</a>
+                                </dd>
+                            <dd>
+                                <a href="javascript:;" class="layTabPlus" tab_url="Payment/index">缴费历史</a>
+                            </dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">停车位模块</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" class="layTabPlus" tab_url="Parking/index">租赁停车位</a></dd>
+                            <dd><a href="javascript:;" class="layTabPlus" tab_url="Parking/user">停车位信息</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">报修模块</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" class="layTabPlus" tab_url="Maintain/index">报修信息</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">意见反馈模块</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" class="layTabPlus" tab_url="Feedback/index">反馈记录</a></dd>
+                        </dl>
+                    </li>
+                </shiro:lacksRole>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="layui-tab" lay-filter="demoTab" lay-allowClose="true">
+            <ul class="layui-tab-title">
+                <li class="layui-this noclose" lay-id='base_info'>公告页面</li>
+            </ul>
+            <div class="layui-tab-content" style="padding:0px;">
+                <div class="layui-tab-item layui-show">
+
+<!--                    <div class="LAY-app-message-btns" style="margin-bottom: 10px;">-->
+<!--                        <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="del">删除</button>-->
+<!--                    </div>-->
+                    <shiro:hasRole name="root">
+                    <script type="text/html" id="toolbar">
+                        <button type="button" class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe654;</i>发布新公告
+                        </button>
+                    </script>
+                    </shiro:hasRole>
+
+                    <table class="layui-table-col-special" id="demo" lay-filter="test"></table>
+<!--                    <div class="sysNotice col">-->
+<!--                        <blockquote class="layui-elem-quote title">基本信息</blockquote>-->
+<!--                        -->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-footer">
+        © 1652310120 陈佰祥
+    </div>
+</div>
+<shiro:hasRole name="root">
+<script type="text/html" id="barDemo" lay-filter="test">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+</script>
+</shiro:hasRole>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script src="../layTabPlus/js/DateFormat.js"></script>
+<script>
+    var $ = layui.jquery;
+    var layer = layui.layer;
+    var element = layui.element;
+    var util = layui.util;
+    var table = layui.table;
+    layui.use('table', function(){
+    var table = layui.table;
+        table.render({
+            id: 'idTest',
+            elem: '#demo'
+            ,height: 525
+            ,cellMinWidth: 150
+            ,url: 'card/result' //数据接口
+            ,method: "get"
+            ,toolbar: '#toolbar'
+            ,page: true //开启分页
+            ,limits: [10, 25, 50, 100]
+            ,cols: [
+                [ //表头
+                {field: 'id', title: 'ID', sort: true,hide: true},
+                {field: 'title', title: '标题',event:'titleEvent',align:'center',style:"cursor: pointer;"}
+                ,{field: 'date', title: '发布时间', sort: true,align:'right',templet: function (row) {return DateFormat.toDatetime(row.date);}}
+                ,{width: 165, align:'center', toolbar: '#barDemo'}
+            ]
+            ]
+        });
+
+        table.on('tool(test)',function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "edit":
+                    editWindow();
+                    break;
+                case "delete":
+                    deleteAlert();
+                    break;
+                case "titleEvent":
+                    TitleEvent();
+                    break;
+//----------------------------------公告信息页面----------------------------
+                function TitleEvent(){
+                    if(obj.event==='titleEvent'){
+                        layer.open({
+                            type:1
+                            ,title:data.title
+                            ,area: '300px;'
+                            ,btnAlign: 'c'
+                            ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;" >'+data.textContent+'</div>'+'<div style="padding: 5px; line-height: 10px; background-color: #393D49; color: #fff; font-weight: 10;"><br>发布时间:'+DateFormat.toDatetime(data.date)+'</br></div>'
+                            // ,value:data.textContent
+                            ,btn: ['关闭']
+                        },function (value,index) {
+                            layer.close(index);
+                        })
+                    }
+                }
+//-----------------------------设置公告页面-------------------
+                function editWindow(){
+                    layer.open({
+                        type: 2,
+                        title: "编辑",
+                        content: 'card/edit',
+                        area: ['700px', '80%'],
+                        shadeClose: true,
+                        success: function(layero, index) {
+                            // var iframe = window['layui-layer-iframe' + index];
+                            // iframe.setdata(e.data);
+                            var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                            iframe.child(data,index)//向此iframe层方法 传递参数
+                        }
+                    })
+                }
+//-----------------------------删除公告----------------------
+                function deleteAlert() {
+                    layer.confirm('确定删除?', {
+                        btn: ['确定','取消'], //按钮
+                    }, function(){
+                        $.ajax({
+                            url: "card/delete",
+                            type: "post",
+                            data: {'id' : data.id},
+                            success: function (result) {
+                                if (result != 0) {
+                                    layer.msg("删除成功",{
+                                        icon: 1,
+                                        time: 1000,
+                                        end: function () {
+                                            window.parent.location.reload();
+                                            var index = parent.layer.getFrameIndex(window.name);
+                                            parent.layer.close(index);
+                                        }
+                                    });
+                                }
+                            }, error: function (err) {
+                                layer.msg("删除失败")
+                            }
+                        })
+                    });
+                }
+            }
+        })
+
+        table.on('toolbar(test)', function(obj){
+            var data = obj.data;
+            switch (obj.event) {
+                case "add":
+                    openAddWindow();
+                    break;
+//------------------------------发布公告页面----------------------
+                function openAddWindow() {
+                        layer.open({
+                            type: 2,
+                            content: 'card/add', //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            area: ['700px', '80%']
+                        });
+                        }
+                 }
+        })
+    });
+</script>
+<script type="text/javascript" src="../layTabPlus/js/layTabPlus.js"></script>
+<script>
+    layTabPlus.init({
+        lay_filter: 'demoTab'
+    });
+</script>
+</body>
+
+</html>
+<style>
+    .sysNotice .layui-table {
+        margin-top: 0;
+        border-left: 5px solid #e2e2e2;
+    }
+
+    .layui-elem-quote.title {
+        padding: 10px 15px;
+        margin-bottom: 0;
+    }
+
+    .sysNotice {
+        width: 75%;
+    }
+    .code{
+        color: #c7254e;
+        background-color: #f9f2f4;
+        border-radius: 2px;
+        padding: 4px 2px 0;
+    }
+</style>
+

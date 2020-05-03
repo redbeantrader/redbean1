@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.property.mapper.ParkingPlantMapper">
+  <resultMap id="BaseResultMap" type="com.management.property.pojo.ParkingPlant">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="parking_position" jdbcType="VARCHAR" property="parkingPosition" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="cost" jdbcType="INTEGER" property="cost" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, parking_position, status, cost, number
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from parking_plant
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAllByParking" resultMap="BaseResultMap">
+    select * from parking_plant
+    where id = #{parid,jdbcType=INTEGER}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+
+  <select id="selectByRegion" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from parking_plant
+    where parking_position = #{region,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from parking_plant
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+  <select id="count" resultType="INTEGER">
+        SELECT
+        count(id) as count
+        FROM
+        parking_plant
+   </select>
+  <select id="selectAllcom" resultMap="BaseResultMap">
+    select * from parking_plant
+        where status = #{Sell,jdbcType=VARCHAR}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from parking_plant
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.management.property.pojo.ParkingPlant">
+    insert into parking_plant (id, type, parking_position, 
+      status, cost, number)
+    values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{parkingPosition,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{cost,jdbcType=INTEGER}, #{number ,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.management.property.pojo.ParkingPlant">
+    insert into parking_plant
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="parkingPosition != null">
+        parking_position,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="cost != null">
+        cost,
+      </if>
+      <if test="number!= null">
+        number,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingPosition != null">
+        #{parkingPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="cost != null">
+        #{cost,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.management.property.pojo.ParkingPlant">
+    update parking_plant
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingPosition != null">
+        parking_position = #{parkingPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="cost != null">
+        cost = #{cost,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.management.property.pojo.ParkingPlant">
+    update parking_plant
+    set type = #{type,jdbcType=VARCHAR},
+      parking_position = #{parkingPosition,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      cost = #{cost,jdbcType=INTEGER},
+      number = #{number,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

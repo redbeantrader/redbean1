@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.property.mapper.CostsMapper">
+  <resultMap id="BaseResultMap" type="com.management.property.pojo.Costs">
+    <id column="costs_id" jdbcType="INTEGER" property="costsId" />
+    <result column="costs_type" jdbcType="VARCHAR" property="costsType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    costs_id, costs_type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from costs
+    where costs_id = #{costsId,jdbcType=INTEGER}
+  </select>
+
+  <select id="CostsList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from costs
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from costs
+    where costs_id = #{costsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.management.property.pojo.Costs">
+    insert into costs (costs_id, costs_type)
+    values (#{costsId,jdbcType=INTEGER}, #{costsType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.management.property.pojo.Costs">
+    insert into costs
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="costsId != null">
+        costs_id,
+      </if>
+      <if test="costsType != null">
+        costs_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="costsId != null">
+        #{costsId,jdbcType=INTEGER},
+      </if>
+      <if test="costsType != null">
+        #{costsType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.management.property.pojo.Costs">
+    update costs
+    <set>
+      <if test="costsType != null">
+        costs_type = #{costsType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where costs_id = #{costsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.management.property.pojo.Costs">
+    update costs
+    set costs_type = #{costsType,jdbcType=VARCHAR}
+    where costs_id = #{costsId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>信息展示</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../../HouseIndex/CSS/override-layui.css">
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="example">
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-col-space15">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-row">
+                        <div class="layui-col-xs12">
+                            <h3>缴费类型 ：<label id="costsType" ></label></h3>
+                            <h3>缴费状态 ：<label id="payWhether"></label></h3>
+                            <h3>缴费月份 ：<label id="payMonth"></label></h3>
+                            <h3>缴费金额 ：<label id="payMoeny"></label></h3>
+                            <h3>缴费日期 ：<label id="payDate"></label></h3>
+                            <h3>有效日期 ：<label id="maturityDate"></label></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script type="text/javascript">
+    function child(res, index) {
+        var form=layui.form;
+        document.getElementById('costsType').innerHTML=res.costsType;
+        document.getElementById('payWhether').innerHTML=res.payWhether;
+        document.getElementById('payMonth').innerHTML=res.payMonth;
+        document.getElementById('payMoeny').innerHTML=res.payMoeny;
+        document.getElementById('payDate').innerHTML=res.payDate;
+        document.getElementById('maturityDate').innerHTML=res.maturityDate;
+        form.render();
+    }
+</script>
+</body>
+</html>

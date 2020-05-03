@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的反馈记录</title>
+    <script src="../../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <script src="../../layui/layui.all.js"></script>
+</head>
+<body>
+<form class="layui-form" lay-filter="example">
+    <div class="layui-form-item">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">投诉内容</label>
+            <div class="layui-input-block">
+                <textarea id="messageContent" required name="messageContent" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="sumbit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sumbit)', function (data) {
+            if(data.messageContent == ""){
+                layer.msg("还未输入信息", {icon: 2})
+            }
+            var index = layer.load(1);
+            var data = data.field;
+            $.ajax({
+                url: "add",
+                type: "post",
+                data: {'infromation':data.messageContent},
+                success: function (result) {
+                    layer.close(index);
+                    if (result == 1) {
+                        layer.msg("提交成功",{
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            }
+                        });
+                    }
+                }, error: function (err) {
+                    layer.close(index);
+                    layer.msg("出现错误")
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

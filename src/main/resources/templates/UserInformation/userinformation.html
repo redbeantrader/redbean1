@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息中心</title>
+    <script src="../../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+</head>
+<body>
+<script type="text/javascript">
+    $(function() {
+        $.ajax({
+            type: "GET", //提交表单的方式
+            url:  "infor",
+            success: function(data) {//当访问链接成功后返回的事件
+                $('#loginName').val(data.loginName) ;
+                $('#phone').val(data.phone) ;
+                $('#userName').val(data.userName) ;
+                $('#userNumber').val(data.userNumber) ;
+            },
+            error: function(msg) { //当访问链接失败后返回的事件
+                alert("出错了");
+
+            }
+        });
+    });
+</script>
+<form class="layui-form" action="" lay-filter="example">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-inline">
+                <input id="loginName" type="text" name="loginName" required lay-verify="loginName" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">联系方式</label>
+            <div class="layui-input-inline">
+                <input id="phone" type="text" name="phone" required lay-verify="phone" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-inline">
+                <input id="userName" type="text" name="userName" required lay-verify="userName" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">身份证号码</label>
+            <div class="layui-input-inline">
+                <input id="userNumber" type="text" name="userNumber" required lay-verify="userNumber" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="width: 75%">
+            <button id="edit" type="button" class="layui-btn" lay-filter="edit" onclick="showCont();">修改信息</button>
+            <button id="sub" type="submit"  class="layui-btn" lay-submit="" lay-filter="sumbit">确认提交</button>
+            <button id="res" type="button" class="layui-btn layui-btn-primary" onclick="hideCont()">取消</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../../layui/layui.all.js"></script>
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sumbit)', function (data) {
+            var index = layer.load(1);
+            var data = data.field;
+            $.ajax({
+                url: "updata",
+                type: "post",
+                data: data,
+                success: function (result) {
+                    layer.close(index);
+                    if (result == 1) {
+                        $("#res").hide();
+                        $("#sub").hide();
+
+                        layer.msg("修改成功",{
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                }, error: function (err) {
+                    layer.close(index);
+                    layer.msg("出现错误")
+                }
+            })
+            return false;
+        });
+    });
+</script>
+<script>
+    function showCont() {
+
+        $('#phone').attr("disabled",false);
+        $('#userName').attr("disabled",false);
+        $('#userNumber').attr("disabled",false);
+
+                $("#sub").show();
+                $("#res").show();
+                $('#edit').hide();
+    }
+    function hideCont(){
+        $('#phone').attr("disabled",true);
+        $('#userName').attr("disabled",true);
+        $('#userNumber').attr("disabled",true);
+
+        $("#res").hide();
+        $("#sub").hide();
+        $('#edit').show();
+
+        $.ajax({
+            type: "GET", //提交表单的方式
+            url:  "infor",
+            success: function(data) {//当访问链接成功后返回的事件
+                $('#loginName').val(data.loginName) ;
+                $('#phone').val(data.phone) ;
+                $('#userName').val(data.userName) ;
+                $('#userNumber').val(data.userNumber) ;
+            },
+            error: function(msg) { //当访问链接失败后返回的事件
+                alert("出错了");
+
+            }
+        });
+    }
+    window.onload=function(){
+        hideCont();
+    }
+</script>
+</body>
+</html>

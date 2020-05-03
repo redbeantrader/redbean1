@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>车位信息</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../../HouseIndex/CSS/override-layui.css">
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="example">
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-col-space15">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-row">
+                        <div class="layui-col-xs12">
+                            <h3>缴费类型 ：<label id="type" ></label></h3>
+                            <h3>缴费状态 ：<label id="parkingPosition"></label></h3>
+                            <h3>缴费月份 ：<label id="cost"></label></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script type="text/javascript">
+    function child(res, index) {
+        var form=layui.form;
+        document.getElementById('type').innerHTML=res.type;
+        document.getElementById('parkingPosition').innerHTML=res.parkingPosition+res.number+"号";
+        document.getElementById('cost').innerHTML=res.cost;
+        form.render();
+    }
+</script>
+</body>
+</html>

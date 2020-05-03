@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.property.mapper.RepairManMapper">
+  <resultMap id="BaseResultMap" type="com.management.property.pojo.RepairMan">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="repair_name" jdbcType="VARCHAR" property="repairName" />
+    <result column="repair_phone" jdbcType="VARCHAR" property="repairPhone" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, repair_name, repair_phone, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from repair_man
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from repair_man
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+  <select id="count" resultType="INTEGER">
+        SELECT
+        count(id) as count
+        FROM
+        repair_man
+   </select>
+  <select id="selectAllByStatus" resultMap="BaseResultMap">
+    select * from repair_man
+    where status = #{status,jdbcType=VARCHAR}
+    LIMIT
+    ${(page - 1) * limit},${limit}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from repair_man
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.management.property.pojo.RepairMan">
+    insert into repair_man (id, repair_name, repair_phone, 
+      status)
+    values (#{id,jdbcType=INTEGER}, #{repairName,jdbcType=VARCHAR}, #{repairPhone,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.management.property.pojo.RepairMan">
+    insert into repair_man
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="repairName != null">
+        repair_name,
+      </if>
+      <if test="repairPhone != null">
+        repair_phone,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="repairName != null">
+        #{repairName,jdbcType=VARCHAR},
+      </if>
+      <if test="repairPhone != null">
+        #{repairPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.management.property.pojo.RepairMan">
+    update repair_man
+    <set>
+      <if test="repairName != null">
+        repair_name = #{repairName,jdbcType=VARCHAR},
+      </if>
+      <if test="repairPhone != null">
+        repair_phone = #{repairPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.management.property.pojo.RepairMan">
+    update repair_man
+    set repair_name = #{repairName,jdbcType=VARCHAR},
+      repair_phone = #{repairPhone,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发布公告</title>
+    <style>
+        form {
+            padding: 20px;
+        }
+    </style>
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="example">
+    <div class="layui-form-item">
+        <label class="layui-form-label">公告标题</label>
+        <div class="layui-input-block">
+            <input id="title" type="text" name="title" required lay-verify="title" autocomplete="off" class="layui-input" placeholder="请输入公告标题">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">公告内容</label>
+        <div class="layui-input-block">
+            <textarea id="textContent" name="textContent" required lay-verify="textContent" autocomplete="off" class="layui-textarea" placeholder="请输入公告内容"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="width: 75%">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="sumbit">确认提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sumbit)', function (data) {
+            var index = layer.load(1);
+            var data = data.field;
+            $.ajax({
+                url: "add",
+                type: "post",
+                data: data,
+                success: function (result) {
+                    layer.close(index);
+                    if (result == 1) {
+                        layer.msg("发布成功",{
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            }
+                        });
+                    }
+                }, error: function (err) {
+                    layer.close(index);
+                    layer.msg("出现错误")
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

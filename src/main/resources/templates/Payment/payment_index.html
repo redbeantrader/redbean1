@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>缴费历史</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <script src="../../layTabPlus/js/DateFormat.js"></script>
+</head>
+<body>
+<shiro:hasRole name="com">
+    <table class="layui-hide" id="demo" lay-filter="test"></table>
+    <script type="text/html" id="barDemo_com" lay-filter="test">
+        <a class="layui-btn layui-btn-xs" lay-event="select">查看</a>
+    </script>
+</shiro:hasRole>
+
+<shiro:hasRole name="root">
+    <table class="layui-hide" id="rdemo" lay-filter="rtest"></table>
+    <script type="text/html" id="barDemo" lay-filter="test">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+    </script>
+</shiro:hasRole>
+<script type="text/javascript" src="../layui/layui.all.js"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        table.render({
+            id: 'idTest',
+            elem: '#demo'
+            , height: 525
+            , cellMinWidth: 150
+            , url: 'comList' //数据接口
+            , method: "get"
+            , page: true //开启分页
+            ,toolbar: '#toolbar'
+            , limits: [10, 25, 50, 100]
+            , cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', hide: true}
+                    , {field: 'costsType', title: '类型', sort: true}
+                    , {field: 'payWhether', title: '缴费状态', sort: true}
+                    , {field: 'payMonth', title: '缴费月份', sort: true}
+                    , {field: 'payMoeny', title: '缴费金额', sort: true}
+                    , {field: 'payDate', title: '缴费日期', sort: true,templet: function (row) {return DateFormat.toDatetime(row.payDate);}}
+                    , {field: 'maturityDate', title: '有效日期', sort: true,templet: function (row) {return DateFormat.toDatetime(row.maturityDate);}}
+                    , {width: 165, align: 'center', toolbar: '#barDemo_com'}
+                ]
+            ]
+        });
+
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "select":
+                    TitleEvent();
+                    break;
+
+//----------------------------------信息页面----------------------------
+                function TitleEvent() {
+                        layer.open({
+                            type: 2,
+                            title: "信息展示",
+                            content: 'look',
+                            skin: 'layui-layer-molv',//皮肤样式
+                            area: ['600px', '600px'],//宽高
+                            shadeClose: true,
+                            success: function (layero, index) {
+                                // var iframe = window['layui-layer-iframe' + index];
+                                // iframe.setdata(e.data);
+                                var iframe = window['layui-layer-iframe' + index];//拿到iframe元素
+                                iframe.child(data, index)//向此iframe层方法 传递参数
+                            }
+                        })
+                }
+            }
+        })
+    })
+
+</script>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            id: 'ridTest',
+            elem: '#rdemo'
+            ,height: 525
+            ,cellMinWidth: 150
+            ,url: 'List' //数据接口
+            ,method: "get"
+            ,toolbar: '#toolbar'
+            ,page: true //开启分页
+            ,limits: [10, 25, 50, 100]
+            ,cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', hide: true}
+                    , {field: 'userName', title: '户主', sort: true}
+                    , {field: 'costsType', title: '类型', sort: true}
+                    , {field: 'payWhether', title: '缴费状态', sort: true}
+                    , {field: 'payMonth', title: '缴费月份', sort: true}
+                    , {field: 'payMoeny', title: '缴费金额', sort: true}
+                    , {field: 'payDate', title: '缴费日期', sort: true,templet: function (row) {return DateFormat.toDatetime(row.payDate);}}
+                    , {field: 'maturityDate', title: '有效日期', sort: true,templet: function (row) {return DateFormat.toDatetime(row.maturityDate);}}
+                    , {width: 165, align:'center', toolbar: '#barDemo'}
+                ]
+            ]
+        });
+
+        table.on('tool(rtest)', function (obj) {
+            var data = obj.data;//获得当前行数据
+            switch (obj.event) {
+                case "delete":
+                    deleteAlert();
+                    break;
+
+//-----------------------------删除----------------------
+                function deleteAlert() {
+                    layer.confirm('确定删除此记录?', {
+                        btn: ['确定', '取消'], //按钮
+                    }, function () {
+                        $.ajax({
+                            url: "delete",
+                            type: "post",
+                            data: {'id': data.id},
+                            success: function (result) {
+                                if (result == 1) {
+                                    layer.msg("删除成功", {
+                                        icon: 1,
+                                        time: 1000,
+                                        end: function () {
+                                            window.parent.location.reload();
+                                            var index = parent.layer.getFrameIndex(window.name);
+                                            parent.layer.close(index);
+                                        }
+                                    });
+                                }
+                                else if(result == 2){
+                                    layer.msg("此住房正在出租,不可删除住房")
+                                }
+                            }, error: function (err) {
+                                layer.msg("删除失败")
+                            }
+                        })
+                    });
+                }
+            }
+
+        })
+
+    });
+</script>
+</body>
+</html>

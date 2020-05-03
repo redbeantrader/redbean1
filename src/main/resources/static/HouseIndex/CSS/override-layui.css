@@ -1,0 +1,19 @@
+.layui-nav-tree {
+    width: 250px;
+}
+
+.layui-layout-admin .layui-side {
+    width: 250px;
+}
+
+.layui-layout-admin .layui-logo {
+    width: 250px;
+}
+
+.layui-layout-left {
+    left: 250px;
+}
+
+.layui-layout-admin .layui-footer {
+    left: 250px;
+}
